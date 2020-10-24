@@ -6,6 +6,7 @@ export interface League {
 export interface Config {
   configVersion: number
   leagueId?: string
+  isPrivateLeague: boolean
   priceCheckKey: string | null
   priceCheckKeyHold: string
   priceCheckLocked: string | null
@@ -49,13 +50,13 @@ interface Widget {
 }
 
 type WidgetWellKnownFlag =
-  'uninitialized' |
-  'skip-menu' |
-  'has-browser' |
-  'invisible-on-blur' |
-  'hide-on-blur' |
-  'hide-on-blur(close)' |
-  'hide-on-focus'
+  | 'uninitialized'
+  | 'skip-menu'
+  | 'has-browser'
+  | 'invisible-on-blur'
+  | 'hide-on-blur'
+  | 'hide-on-blur(close)'
+  | 'hide-on-focus'
 
 export const defaultConfig: Config = {
   configVersion: 3,
@@ -71,25 +72,32 @@ export const defaultConfig: Config = {
   mapCheckKey: null,
   delveGridKey: null,
   restoreClipboard: true,
-  commands: [{
-    text: '/hideout',
-    hotkey: 'F5'
-  }, {
-    text: '/exit',
-    hotkey: 'F9'
-  }, {
-    text: '@last ty',
-    hotkey: null
-  }, {
-    text: '/invite @last',
-    hotkey: null
-  }, {
-    text: '/tradewith @last',
-    hotkey: null
-  }, {
-    text: '/hideout @last',
-    hotkey: null
-  }],
+  commands: [
+    {
+      text: '/hideout',
+      hotkey: 'F5'
+    },
+    {
+      text: '/exit',
+      hotkey: 'F9'
+    },
+    {
+      text: '@last ty',
+      hotkey: null
+    },
+    {
+      text: '/invite @last',
+      hotkey: null
+    },
+    {
+      text: '/tradewith @last',
+      hotkey: null
+    },
+    {
+      text: '/hideout @last',
+      hotkey: null
+    }
+  ],
   clientLog: null,
   useOsGlobalShortcut: true,
   windowTitle: 'Path of Exile',
@@ -135,7 +143,8 @@ export const defaultConfig: Config = {
       wmFlags: ['hide-on-blur', 'skip-menu'],
       selectedStats: [
         {
-          matchRef: 'Slaying Enemies close together has a #% chance to attract monsters from Beyond',
+          matchRef:
+            'Slaying Enemies close together has a #% chance to attract monsters from Beyond',
           invert: false,
           valueWarning: '',
           valueDanger: '',
@@ -232,9 +241,8 @@ export const defaultConfig: Config = {
         x: 50,
         y: 10
       },
-      images: [
-        { url: 'syndicate.jpg' }
-      ]
+      images: [{ url: 'syndicate.jpg' }]
     }
-  ]
+  ],
+  isPrivateLeague: false
 }

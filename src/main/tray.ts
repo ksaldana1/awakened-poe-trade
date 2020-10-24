@@ -1,5 +1,14 @@
 import path from 'path'
-import { app, Tray, Menu, ipcMain, MenuItem, MenuItemConstructorOptions, shell, nativeImage } from 'electron'
+import {
+  app,
+  Tray,
+  Menu,
+  ipcMain,
+  MenuItem,
+  shell,
+  nativeImage,
+  MenuItemConstructorOptions
+} from 'electron'
 import { checkForUpdates, UpdateState } from './updates'
 import { config } from './config'
 import { overlayWindow } from './overlay-window'
@@ -13,36 +22,54 @@ export let isQuiting = false
 
 export let leagues: League[] = []
 
-function selectLeague (league: League) {
+function selectLeague(league: League) {
   logger.info('League selected', { source: 'config', leagueId: league.id })
   config.set('leagueId', league.id)
 
-  leagues.forEach(league => { league.selected = false })
+  leagues.forEach(league => {
+    league.selected = false
+  })
   league.selected = true
   rebuildContextMenu()
 
   overlayWindow!.webContents.send(LEAGUE_SELECTED, league.id)
 }
 
-function leaguesMenuItem () {
+function leaguesMenuItem() {
   if (!leagues.length) return []
+
+  const submenu: MenuItemConstructorOptions[] = [
+    ...leagues.map(league => ({
+      label: league.id,
+      type: 'checkbox' as 'checkbox',
+      checked: league.selected,
+      click: () => {
+        selectLeague(league)
+      }
+    })),
+    {
+      label: 'Private League',
+      type: 'checkbox' as 'checkbox',
+      checked: config.store.isPrivateLeague
+    }
+  ]
 
   const menuItem = new MenuItem({
     label: 'League',
-    submenu: leagues.map(league => ({
-      label: league.id,
-      type: 'checkbox',
-      checked: league.selected,
-      click: () => { selectLeague(league) }
-    } as MenuItemConstructorOptions))
+    submenu
   })
 
   return [menuItem]
 }
 
-export function createTray () {
+export function createTray() {
   tray = new Tray(
-    nativeImage.createFromPath(path.join(__static, process.platform === 'win32' ? 'icon.ico' : 'icon.png'))
+    nativeImage.createFromPath(
+      path.join(
+        __static,
+        process.platform === 'win32' ? 'icon.ico' : 'icon.png'
+      )
+    )
   )
 
   ipcMain.on(LEAGUES_READY, (e, leagues_: League[]) => {
@@ -58,7 +85,7 @@ export function createTray () {
   rebuildContextMenu()
 }
 
-export function rebuildContextMenu () {
+export function rebuildContextMenu() {
   const contextMenu = Menu.buildFromTemplate([
     ...leaguesMenuItem(),
     {
@@ -71,7 +98,9 @@ export function rebuildContextMenu () {
     {
       label: `APT v${app.getVersion()}`,
       click: () => {
-        shell.openExternal('https://github.com/SnosMe/awakened-poe-trade/releases')
+        shell.openExternal(
+          'https://github.com/SnosMe/awakened-poe-trade/releases'
+        )
       }
     },
     {
@@ -98,16 +127,22 @@ export function rebuildContextMenu () {
       submenu: [
         {
           label: 'Awakened PoE Trade',
-          click: () => { shell.openExternal('https://discord.gg/hXgSDS6') }
+          click: () => {
+            shell.openExternal('https://discord.gg/hXgSDS6')
+          }
         },
         { type: 'separator' },
         {
           label: 'Path of Exile',
-          click: () => { shell.openExternal('https://discord.gg/fSwfqN5') }
+          click: () => {
+            shell.openExternal('https://discord.gg/fSwfqN5')
+          }
         },
         {
           label: 'The Forbidden Trove',
-          click: () => { shell.openExternal('https://discord.gg/KNpmhvk') }
+          click: () => {
+            shell.openExternal('https://discord.gg/KNpmhvk')
+          }
         }
       ]
     },
