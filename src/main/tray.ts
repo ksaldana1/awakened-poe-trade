@@ -35,6 +35,22 @@ function selectLeague(league: League) {
   overlayWindow!.webContents.send(LEAGUE_SELECTED, league.id)
 }
 
+function selectPrivateLeague(league: League) {
+  logger.info('private league selected', {
+    source: 'config',
+    leagueId: league.id
+  })
+  config.set('leagueId', league.id)
+  config.set('isPrivateLeague', true)
+  leagues.forEach(league => {
+    league.selected = false
+  })
+  league.selected = true
+  rebuildContextMenu()
+
+  overlayWindow!.webContents.send(LEAGUE_SELECTED, league.id)
+}
+
 function leaguesMenuItem() {
   if (!leagues.length) return []
 
@@ -48,9 +64,12 @@ function leaguesMenuItem() {
       }
     })),
     {
-      label: 'Private League',
+      label: 'ETHICAL LEAGUE',
       type: 'checkbox' as 'checkbox',
-      checked: config.store.isPrivateLeague
+      checked: config.store.isPrivateLeague,
+      click: () => {
+        selectPrivateLeague({ selected: false, id: 'ETHICAL LEAGUE (PL12057)' })
+      }
     }
   ]
 

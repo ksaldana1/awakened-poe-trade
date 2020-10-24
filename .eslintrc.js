@@ -12,7 +12,7 @@ module.exports = {
       'always',
       { markers: ['#region'], exceptions: ['#endregion'] }
     ],
-    'quote-props': ['error', 'consistent-as-needed'],
+    'quote-props': 'off',
     'space-before-function-paren': 'off'
   },
   parserOptions: {
